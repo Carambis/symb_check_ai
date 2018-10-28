@@ -3,6 +3,8 @@ import java.util.Random;
 public class Main {
     private static int[] weights = new int[15];
     // Порог функции активации
+    //http://programador.ru/resize-image/
+    //http://qaru.site/questions/52162/how-can-i-resize-an-image-using-java
     private static int bias = 7;
     private static Random random = new Random();
 
