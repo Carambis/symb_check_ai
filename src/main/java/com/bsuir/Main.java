@@ -6,31 +6,30 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-    private static final int COUNT_LEARM = 10;
+    private static final int COUNT_LEARN = 10;
     private static final int SIZE_IMAGE = 9900;
+    private static final int NUMBER_SET = 3;
     private static int[] weights = new int[SIZE_IMAGE];
-    private static int bias = 6;
-    private static Random random = new Random();
-    private static String path = "src\\main\\resources\\study_file\\";
-    private static final String path_to_weights = "src\\main\\resources\\weights.txt";
-    private static String path_test = "src\\main\\resources\\test_file\\";
-    private static String png = ".png";
-    private static int test_number = 2;
+    private static final int BIAS = 5;
+    private static final String PATH = "src\\main\\resources\\study_file\\";
+    private static final String PATH_TO_WEIGHTS = "src\\main\\resources\\weights.txt";
+    private static final String PATH_TEST = "src\\main\\resources\\test_file\\";
+    private static final String PNG = ".PNG";
+    private static final int TEST_NUMBER = 3;
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
-        try(BufferedReader reader = new BufferedReader(new FileReader(path_to_weights))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(PATH_TO_WEIGHTS))) {
             String str;
             int i = 0;
             while ((str = reader.readLine()) != null) {
                 weights[i] = Integer.parseInt(str);
                 i++;
             }
-            if (i != 9900) {
+            if (i != SIZE_IMAGE) {
                 learn();
             }
         } catch (FileNotFoundException e) {
@@ -51,7 +50,7 @@ public class Main {
         for (int i = 0; i < number.length; i++) {
             net += number[i] * weights[i];
         }
-        return net >= bias;
+        return net >= BIAS;
     }
 
     private static void decrease(int[] number) {
@@ -72,10 +71,12 @@ public class Main {
 
     private static int[] readImage(String fileName) throws IOException {
         BufferedImage image = ImageIO.read(new File(fileName));
-        int[] points = new int[image.getHeight() * image.getWidth()];
+        int height = image.getHeight();
+        int width = image.getWidth();
+        int[] points = new int[height * width];
         int k = 0;
-        for (int i = 0; i < image.getHeight(); i++) {
-            for (int j = 0; j < image.getWidth(); j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 int rgb = image.getRGB(j, i);
                 Color color = new Color((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
                 points[k] = color.equals(Color.BLACK) ? 1 : 0;
@@ -88,16 +89,16 @@ public class Main {
     private static void learn() throws IOException {
         System.out.println("Start learning");
         List<int[]> list = new ArrayList<>();
-        for (int i = 0; i < COUNT_LEARM; i++) {
-            list.add(readImage(path + i + "0" + png));
-            list.add(readImage(path + i + "1" + png));
-            list.add(readImage(path + i + "2" + png));
+        for (int i = 0; i < COUNT_LEARN; i++) {
+            for (int j = 0; j < NUMBER_SET; j++) {
+                list.add(readImage(PATH + i + "" + j + PNG));
+            }
         }
 
         for (int i = 0; i < 10000; i++) {
-            for (int j = 0; j < 30; j++) {
+            for (int j = 0; j < list.size(); j++) {
                 int[] number = list.get(j);
-                if (j / 3 != test_number) {
+                if (j / NUMBER_SET != TEST_NUMBER) {
                     if (proceed(number)) {
                         decrease(number);
                     }
@@ -109,7 +110,7 @@ public class Main {
             }
         }
 
-        FileWriter fileWriter = new FileWriter(new File(path_to_weights));
+        FileWriter fileWriter = new FileWriter(new File(PATH_TO_WEIGHTS));
         for (int weight : weights) {
             fileWriter.append(String.valueOf(weight));
             fileWriter.append("\n");
@@ -127,9 +128,9 @@ public class Main {
         switch (string) {
             case "2":
             case "5":
-            case "21":
+            case "32":
             case "90":
-                System.out.println(string + " = " + proceed(readImage(path_test + string + png)));
+                System.out.println(string + " = " + proceed(readImage(PATH_TEST + string + PNG)));
                 break;
             default:
                 System.out.println("Incorrect number");
