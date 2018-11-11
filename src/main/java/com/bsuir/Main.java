@@ -95,7 +95,7 @@ public class Main {
 
         arrays = getBW(scaled);
 
-        int[] points = new int[arrays.length*arrays[0].length];
+        int[] points = new int[arrays.length * arrays[0].length];
         int k = 0;
         for (int[] array : arrays) {
             for (int anArray : array) {
@@ -160,13 +160,13 @@ public class Main {
 
     private static int[][] renderImage(int[][] image) {
         while (checkRow(image, 0)) {
-            image = deleteFirstRow(image);
+            deleteFirstRow(image);
         }
         while (checkRow(image, image.length - 1)) {
             image = deleteLastRow(image);
         }
         while (checkColumn(image, 0)) {
-            image = deleteLeftColumn(image);
+            deleteLeftColumn(image);
         }
         while (checkColumn(image, image[0].length - 1)) {
             image = deleteRightColumn(image);
