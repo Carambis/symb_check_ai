@@ -13,7 +13,7 @@ public class Main {
     private static final int SIZE_IMAGE = 9900;
     private static final int NUMBER_SET = 3;
     private static int[] weights = new int[SIZE_IMAGE];
-    private static final int BIAS = 5;
+    private static int bias = 5;
     private static final String PATH = "src\\main\\resources\\study_file\\";
     private static final String PATH_TO_WEIGHTS = "src\\main\\resources\\weights.txt";
     private static final String PATH_TEST = "src\\main\\resources\\test_file\\";
@@ -50,7 +50,9 @@ public class Main {
         for (int i = 0; i < number.length; i++) {
             net += number[i] * weights[i];
         }
-        return net >= BIAS;
+        boolean answer = net>=bias;
+        bias = bias  - net;
+        return answer;
     }
 
     private static void decrease(int[] number) {
